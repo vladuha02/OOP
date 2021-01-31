@@ -1,0 +1,150 @@
+package com.max.idea;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Main {
+    char[] spreadsheet = {'а','б','в','г','д','е','є','ж','з','и','і','ї','й','к','л','м','н','о','п','р','с','т','у',
+            'ф','х','ц','ч','ш','щ','ь','ю','я','А','Б','В','Г','Д','Е','Є','Ж','З','И','І','Ї','Й','К','Л','М','Н',
+            'О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ь','Ю','Я',' '};
+    char[] codeSpreadsheet = {'б','г','е','ж','и','ї','к','м','о','р','т','ф','ц','ш','ь','я','а','в','д','є','з','і',
+            'й','л','н','п','с','у','х','ч','щ','ю', 'Б','Г','Е','Ж','И','Ї','К','М','О','Р','Т','Ф','Ц','Ш','Ь','Я',
+            'А','В','Д','Є','З','І','Й','Л','Н','П','С','У','Х','Ч','Щ','Ю',' '};
+//        29. Створіть метод, який приймає будь-яку кількість масивів int[] та повертає найменше число яке є у складі
+//        цих масивів.
+    public int theLeastNumInArr(int[] ... arr) {
+        int result;
+        int[] minElem = new int[arr.length];
+        for(int i = 0; i < arr.length; ++i) {
+            minElem[i] = arr[i][0];
+            for (int j = 0; j < arr[i].length; ++j) {
+                if(arr[i][j] < minElem[i]) minElem[i] = arr[i][j];
+            }
+        }
+        result = minElem[0];
+        for (int i : minElem) {
+            if (i < result) result = i;
+        }
+        return result;
+    }
+//        15. Створіть 2 методи, які можуть кодувати та розкодувати будь який рядок у відповідності з таблицею
+//        перекодування в якій наприклад символу =а= відповідає символ =й= ... Таблиці перекодування повинні бути
+//        атрибутами класу, в якому будуть знаходитися методи.
+    public String codeString(String str) {
+        int[] indexes = new int[str.length()];
+        StringBuilder newStr = new StringBuilder();
+        for(int i = 0; i < str.length(); ++i) {
+            for (int j = 0; j < spreadsheet.length; ++j) {
+                if (str.charAt(i) == spreadsheet[j]) {
+                    indexes[i] = j;
+                    break;
+                }
+            }
+            newStr.append(codeSpreadsheet[indexes[i]]);
+        }
+        str = newStr.toString();
+        return str;
+    }
+
+    public String decodeString(String str) {
+        int[] indexes = new int[str.length()];
+        StringBuilder newStr = new StringBuilder();
+        for(int i = 0; i < str.length(); ++i) {
+            for (int j = 0; j < spreadsheet.length; ++j) {
+                if (str.charAt(i) == spreadsheet[j]) {
+                    indexes[i] = j;
+                    break;
+                }
+            }
+            newStr.append(spreadsheet[indexes[i]]);
+        }
+        str = newStr.toString();
+        return str;
+    }
+//        13. Створіть метод, який сортує будь який масив int[] методом вибору.
+public static void selectionSort(int[] array) {
+    for (int i = 0; i < array.length; i++) {
+        int pos = i;
+        int min = array[i];
+        for (int j = i + 1; j < array.length; j++) {
+            if (array[j] < min) {
+                pos = j;
+                min = array[j];
+            }
+        }
+        array[pos] = array[i];
+        array[i] = min;
+    }
+}
+//        2. Розробіть метод, який виводить на екран спільні елементи будь яких двох 2-вимірних масивів int[][].
+//        Результат роботи методу не повинен залежати від того чи є масив регулярним.
+    public Integer[] mutualArrayElements(int[][] arr1, int[][] arr2) {
+        ArrayList<Integer> oneLineArray1 = new ArrayList<>(), oneLineArray2 = new ArrayList<>(),
+                arrayResult = new ArrayList<>();
+        Integer[] result;
+
+        for(int i = 0; i < arr1.length; ++i) {
+            for(int j = 0; j < arr1[i].length; ++j) {
+                oneLineArray1.add(arr1[i][j]);
+            }
+        }
+        for(int i = 0; i < arr2.length; ++i) {
+            for(int j = 0; j < arr2[i].length; ++j) {
+                oneLineArray2.add(arr2[i][j]);
+            }
+        }
+        for(int item1 : oneLineArray1) {
+            for(int item2 : oneLineArray2) {
+                if(item1 == item2) {
+                    arrayResult.add(item2);
+                }
+            }
+        }
+        result = new Integer[arrayResult.size()];
+        result = arrayResult.toArray(result);
+        return result;
+    }
+//        6. Створіть метод, який дозволяє порівняти 2 будь яких масиви int[] за складом. Масиви можуть відрізнятися по
+//        порядку елементів, але бути однаковими зі складу. Приклад: [1,4,7]==[4,7,1- еквівалентні]
+    public boolean ifArraysAreEqual(int[] arr1, int[] arr2) {
+        ArrayList<Integer> sortedArr1 = new ArrayList<>(), sortedArr2 = new ArrayList<>();
+        for(int item : arr1) {
+            sortedArr1.add(item);
+        }
+        for(int item : arr2) {
+            sortedArr2.add(item);
+        }
+        Collections.sort(sortedArr1);
+        Collections.sort(sortedArr2);
+        return (sortedArr1.size() == sortedArr2.size() && sortedArr1.containsAll(sortedArr2)) ? true : false;
+    }
+    public static void main(String[] args) {
+        Main main = new Main();
+        // 29
+        int[] a = {4, 84, 13, 64}, b = {3, 743, 42, 81, 93}, c = {913, 83, 816, 52, 2, 883}, d = {4, 84, 13, 64};
+        System.out.println("the least number is: " + main.theLeastNumInArr(a, b, c));
+        // 15
+        String test1 = "лАОВшпшплрлдвпошвапшваоЛ", test2 = "плдаошів шашщівшщ пшпоаолвп";
+        System.out.println("coded string test1: " + main.codeString(test1));
+        System.out.println("coded string test2: " + main.codeString(test2));
+        System.out.println("decoded string test1: " + main.decodeString(test1));
+        System.out.println("decoded string test2: " + main.decodeString(test2));
+        // 13
+        main.selectionSort(c);
+        System.out.println("sorted array:");
+        for(int item : c) {
+            System.out.println(item);
+        }
+        System.out.println("----------------------------");
+        // 2
+        int[][] arr1 = {{4, 6, 28, 93, 5, 23, 65, 24, 75, 21, 92}, {5, 3, 92, 23, 64, 66, 99, 14}};
+        int[][] arr2 = {{5, 12, 65, 23, 75, 26, 42, 76, 32, 56, 64}, {63, 265, 33, 22, 15, 64}};
+        Integer[] arr3 = main.mutualArrayElements(arr1, arr2);
+        for(int item : arr3) {
+            System.out.println(item);
+        }
+        // 6
+        System.out.println(main.ifArraysAreEqual(a, b));
+        System.out.println(main.ifArraysAreEqual(a, d));
+    }
+}
