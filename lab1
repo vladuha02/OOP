@@ -61,14 +61,14 @@ public class Main {
         return str;
     }
 //        13. Створіть метод, який сортує будь який масив int[] методом вибору.
-public static void selectionSort(int[] array) {
-    for (int i = 0; i < array.length; i++) {
-        int pos = i;
-        int min = array[i];
-        for (int j = i + 1; j < array.length; j++) {
-            if (array[j] < min) {
-                pos = j;
-                min = array[j];
+    public void selectionSort(int[] array) {
+        for (int i = 0; i < array.length; i++) {
+            int pos = i;
+            int min = array[i];
+            for (int j = i + 1; j < array.length; j++) {
+                if (array[j] < min) {
+                    pos = j;
+                    min = array[j];
             }
         }
         array[pos] = array[i];
@@ -80,29 +80,29 @@ public static void selectionSort(int[] array) {
     public int[] mutualArrayElements(int[][] arr1, int[][] arr2) {
         int length1 = 0, length2 = 0;
         int k = 0;
-        for(int i = 0; i < arr1.length; ++i) {
-            for(int j = 0; j < arr1[i].length; ++j) {
+        for (int[] item : arr1) {
+            for (int j = 0; j < item.length; ++j) {
                 ++length1;
             }
         }
-        for(int i = 0; i < arr2.length; ++i) {
-            for(int j = 0; j < arr2[i].length; ++j) {
+        for (int[] item : arr2) {
+            for (int j = 0; j < item.length; ++j) {
                 ++length2;
             }
         }
         int[] oneLineArray1 = new int[length1], oneLineArray2 = new int[length2],
                 result;
         int counter = 0;
-        for(int i = 0; i < arr1.length; ++i) {
-            for(int j = 0; j < arr1[i].length; ++j) {
-                oneLineArray1[k] = arr1[i][j];
+        for (int[] item : arr1) {
+            for (int i : item) {
+                oneLineArray1[k] = i;
                 ++k;
             }
         }
         k = 0;
-        for(int i = 0; i < arr2.length; ++i) {
-            for(int j = 0; j < arr2[i].length; ++j) {
-                oneLineArray2[k] = arr2[i][j];
+        for (int[] item : arr2) {
+            for (int i : item) {
+                oneLineArray2[k] = i;
                 ++k;
             }
         }
@@ -117,8 +117,8 @@ public static void selectionSort(int[] array) {
                 }
             }
         }
-        for(int i = 0; i < result.length; ++i) {
-            if(!(result[i] == 0)) ++counter;
+        for (int j : result) {
+            if (!(j == 0)) ++counter;
         }
         result = Arrays.copyOf(result, counter);
         return result;
@@ -127,13 +127,9 @@ public static void selectionSort(int[] array) {
 //        порядку елементів, але бути однаковими зі складу. Приклад: [1,4,7]==[4,7,1- еквівалентні]
     public boolean ifArraysAreEqual(int[] arr1, int[] arr2) {
         int[] sortedArr1 = new int[arr1.length], sortedArr2 = new int[arr2.length];
-        for(int i = 0; i < sortedArr1.length; ++i) {
-            sortedArr1[i] = arr1[i];
-        }
-        for(int i = 0; i < sortedArr2.length; ++i) {
-            sortedArr2[i] = arr2[i];
-        }
-        return (sortedArr1.length == sortedArr2.length && Arrays.equals(sortedArr1, sortedArr2)) ? true : false;
+        System.arraycopy(arr1, 0, sortedArr1, 0, sortedArr1.length);
+        System.arraycopy(arr2, 0, sortedArr2, 0, sortedArr2.length);
+        return sortedArr1.length == sortedArr2.length && Arrays.equals(sortedArr1, sortedArr2);
     }
     public static void main(String[] args) {
         Main main = new Main();
