@@ -126,15 +126,14 @@ public class Main {
 //        6. Створіть метод, який дозволяє порівняти 2 будь яких масиви int[] за складом. Масиви можуть відрізнятися по
 //        порядку елементів, але бути однаковими зі складу. Приклад: [1,4,7]==[4,7,1- еквівалентні]
     public boolean ifArraysAreEqual(int[] arr1, int[] arr2) {
-        int[] sortedArr1 = new int[arr1.length], sortedArr2 = new int[arr2.length];
-        System.arraycopy(arr1, 0, sortedArr1, 0, sortedArr1.length);
-        System.arraycopy(arr2, 0, sortedArr2, 0, sortedArr2.length);
-        return sortedArr1.length == sortedArr2.length && Arrays.equals(sortedArr1, sortedArr2);
+        selectionSort(arr1);
+        selectionSort(arr2);
+        return (arr1.length == arr2.length && Arrays.equals(arr1, arr2));
     }
     public static void main(String[] args) {
         Main main = new Main();
         // 29
-        int[] a = {4, 84, 13, 64}, b = {3, 743, 42, 81, 93}, c = {913, 83, 816, 52, 2, 883}, d = {4, 84, 13, 64};
+        int[] a = {4, 84, 13, 64}, b = {3, 743, 42, 81, 93}, c = {913, 83, 816, 52, 2, 883}, d = {84, 4, 13, 64};
         System.out.println("the least number is: " + main.theLeastNumInArr(a, b, c));
         System.out.println("----------------------------");
         // 15
