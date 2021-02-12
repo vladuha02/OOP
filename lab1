@@ -126,9 +126,16 @@ public class Main {
 //        6. Створіть метод, який дозволяє порівняти 2 будь яких масиви int[] за складом. Масиви можуть відрізнятися по
 //        порядку елементів, але бути однаковими зі складу. Приклад: [1,4,7]==[4,7,1- еквівалентні]
     public boolean ifArraysAreEqual(int[] arr1, int[] arr2) {
+        boolean result = true;
         selectionSort(arr1);
         selectionSort(arr2);
-        return (arr1.length == arr2.length && Arrays.equals(arr1, arr2));
+        for(int i = 0; i < arr1.length; i++) {
+            if(arr1[i] != arr2[i]) {
+                result = false;
+                break;
+            }
+        }
+        return result;
     }
     public static void main(String[] args) {
         Main main = new Main();
