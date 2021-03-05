@@ -1,283 +1,58 @@
+***MAIN.JAVA***
+package com.max.idea;
+
+import java.util.ArrayList;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Main main = new Main();
+        ArrayList<Group> gr201 = new ArrayList<>();
+        ArrayList<Group> gr202 = new ArrayList<>();
+        Group student1 = new Group("Кириленко", "Владислав", 18, 173, 54, 113062002);
+        Group student2 = new Group("Іванов", "Іван", 22, 197, 93, 183756002);
+        Group student3 = new Group("Попов", "Григорій", 18, 190, 78, 127022002);
+        Group.addStudentToGroup(gr201, student1);
+        Group.addStudentToGroup(gr201, student2);
+        Group.addStudentToGroup(gr201, student3);
+
+//        gr201.sort((st1, st2) -> st1.studentID - st2.studentID);
+        Group.changeStudentsGroup(gr201, gr202, student2);
+        Group.ShowInfo(gr201);
+        System.out.println("------------------------------");
+//        Group.ShowInfo(gr202);
+//        Group.searchStudents(gr201, 2);
+//        Group.filterStudents(gr201, 5);
+        Group.addStudentToGroup(gr201, student3);
+        Group.ShowInfo(gr201);
+        System.out.println("-----------------------------------");
+        Group.ShowInfo(gr202);
+    }
+}
+// Створіть модель, яка б дозволяла
+// ++ 1) розподіляти студентів по групам,
+// ++ 2) переводити студентів з однієї групи в іншу,
+// ++ 3) отримувати склад групи відсортований за алфавітом,чи за вагою,чи та зростом. Критерій сортування передається, як
+// параметр методу.
+// ++ 4) Модель повинна дозволяти шукати студентів в групі за прізвищем,
+// ++ 5) фільтрувати за різними критеріями. Критерії передаються як параметри методу фільтрації.
+// ++ 6) Виключити можливість додавання одного й того ж студента декілька разів у групу.
+
 ***GROUP.JAVA***
 package com.max.idea;
 
-import java.util.Comparator;
 import java.util.Scanner;
-import java.util.stream.Stream;
+import java.util.ArrayList;
 
-class Group extends Student {
-    int groupNum;
+class Group {
+    String surname;
+    String name;
+    int age;
+    int height;
+    int weight;
+    int studentID;
 
-    Group(int groupNum, String surname, String name, int age, int height, int weight, int studentID) {
-        super(surname, name, age, height, weight, studentID);
-        this.groupNum = groupNum;
-    }
-    Group() {
-        super();
-        this.groupNum = 0;
-    }
-    Group(Student st) {
-        super(st.surname, st.name, st.age, st.height, st.weight, st.studentID);
-    }
-    Group(Group gr) {
-        this.groupNum = gr.groupNum;
-        this.surname = gr.surname;
-        this.name = gr.name;
-        this.age = gr.age;
-        this.height = gr.height;
-        this.weight = gr.weight;
-        this.studentID = gr.studentID;
-    }
-
-    void sortStudents(Group[] gr, Comparator<Group> condition) {
-        Group buf;
-        boolean isSorted = false;
-        while (!isSorted) {
-            isSorted = true;
-            for (int i = 0; i < gr.length - 1; i++) {
-                if (condition.compare(gr[i], gr[i+1]) < 0) {
-                    isSorted = false;
-
-                    buf = gr[i];
-                    gr[i] = gr[i + 1];
-                    gr[i + 1] = buf;
-                }
-            }
-        }
-        for (Student student : gr) {
-            System.out.println(student.toString());
-        }
-    }
-
-    void searchStudent(Group[] gr) {
-        System.out.println("Type a criteria to search student: 1 - surname, 2 - name, 3 - age, 4 - height, 5 - weight, 6 - ID");
-        int condition;
-        Scanner sc = new Scanner(System.in);
-        condition = sc.nextInt();
-        switch(condition) {
-            case 1: {
-                System.out.println("Type a surname of student: ");
-                String searchingSurname = sc.nextLine();
-                for (Group group : gr) {
-                    if (group.surname.equals(searchingSurname)) {
-                        group.toString();
-                        break;
-                    }
-                }
-                break;
-            }
-            case 2: {
-                System.out.println("Type a name of student: ");
-                String searchingName = sc.nextLine();
-                for (Group group : gr) {
-                    if (group.name.equals(searchingName)) {
-                        group.toString();
-                        break;
-                    }
-                }
-                break;
-            }
-            case 3: {
-                System.out.println("Type an age of student: ");
-                int searchingAge = sc.nextInt();
-                for (Group group: gr) {
-                    if (group.age == searchingAge) {
-                        group.toString();
-                        break;
-                    }
-                }
-                break;
-            }
-            case 4: {
-                System.out.println("Type a height of student: ");
-                int searchingHeight = sc.nextInt();
-                for (Group group : gr) {
-                    if (group.height == searchingHeight) {
-                        group.toString();
-                        break;
-                    }
-                }
-                break;
-            }
-            case 5: {
-                System.out.println("Type a weight of student: ");
-                int searchingWeight = sc.nextInt();
-                for (Group group : gr) {
-                    if (group.weight == searchingWeight) {
-                        group.toString();
-                        break;
-                    }
-                }
-                break;
-            }
-            case 6: {
-                System.out.println("Type an ID of student: ");
-                int searchingID = sc.nextInt();
-                for (Group group : gr) {
-                    if (group.studentID == searchingID) {
-                        group.toString();
-                        break;
-                    }
-                }
-                break;
-            }
-            default: {
-                System.out.println("Wrong criteria, try again.");
-                try {
-                    Thread.sleep(5000);
-                }
-                catch(InterruptedException ie) {
-                    ie.printStackTrace();
-                }
-                searchStudent(gr);
-            }
-        }
-    }
-
-    void filterStudents(Group[] gr) {
-        System.out.println("Type a criteria to filter student: 1 - surname, 2 - name, 3 - age, 4 - height, 5 - weight, 6 - ID");
-        int condition;
-        Scanner sc = new Scanner(System.in);
-        condition = sc.nextInt();
-        Stream<Group> groupStream = null;
-        for(Group group : gr) {
-            groupStream = Stream.of(new Group(group));
-        }
-        switch(condition) {
-            case 1: {
-                System.out.println("Type a word and if it's included in surname, it'll be printed: ");
-                sc = new Scanner(System.in);
-                String word = sc.nextLine();
-                groupStream.filter(g -> g.surname.contains(word)).forEach(g -> System.out.println(g.toString()));
-            }
-            break;
-            case 2: {
-                System.out.println("Type a word and if it's included in name, it'll be printed: ");
-                sc = new Scanner(System.in);
-                String word = sc.nextLine();
-                groupStream.filter(g -> g.name.contains(word)).forEach(g -> System.out.println(g.toString()));
-            }
-            break;
-            case 3: {
-                System.out.println("Type a range and students with age in this range will be printed: ");
-                sc = new Scanner(System.in);
-                int start = sc.nextInt();
-                sc = new Scanner(System.in);
-                int end = sc.nextInt();
-                groupStream.filter(g -> g.age >= start && g.age <= end).forEach(g -> System.out.println(g.toString()));
-            }
-            break;
-            case 4: {
-                System.out.println("Type a range and students with this height in this range will be printed: ");
-                sc = new Scanner(System.in);
-                int start = sc.nextInt();
-                sc = new Scanner(System.in);
-                int end = sc.nextInt();
-                groupStream.filter(g -> g.height >= start && g.height <= end).forEach(g -> System.out.println(g.toString()));
-            }
-            break;
-            case 5: {
-                System.out.println("Type a range and students with this weight in this range will be printed: ");
-                sc = new Scanner(System.in);
-                int start = sc.nextInt();
-                sc = new Scanner(System.in);
-                int end = sc.nextInt();
-                groupStream.filter(g -> g.weight >= start && g.weight <= weight).forEach(g -> System.out.println(g.toString()));
-            }
-            break;
-            case 6: {
-                System.out.println("Type a range and students with this ID in this range will be printed: ");
-                sc = new Scanner(System.in);
-                int start = sc.nextInt();
-                sc = new Scanner(System.in);
-                int end = sc.nextInt();
-                groupStream.filter(g -> g.studentID > start && g.studentID < end).forEach(g -> System.out.println(g.toString()));
-            }
-        }
-    }
-
-    void changeStudentsGroup(Group previousGroupStudent, Group[] previousGroup, Group[] newGroup) {
-        if(previousGroupStudent.isStudentInGroup(previousGroupStudent, newGroup)) {
-            int index = 0;
-            for (Group group : previousGroup) {
-                if (previousGroupStudent.studentID != group.studentID) {
-                    index++;
-                }
-            }
-            if (index == 0) {
-                Group[] previousGroupCopy = new Group[previousGroup.length - 1];
-                System.arraycopy(previousGroup, 1, previousGroupCopy, 0, previousGroupCopy.length);
-                previousGroup = previousGroupCopy;
-            } else if (index == previousGroup.length - 1) {
-                Group[] previousGroupCopy = new Group[previousGroup.length - 1];
-                System.arraycopy(previousGroup, 0, previousGroupCopy, 0, previousGroup.length - 1);
-                previousGroup = previousGroupCopy;
-            } else {
-                Group[] previousGroupCopy = new Group[previousGroup.length - 1];
-                for (int i = 0; i < previousGroup.length; i++) {
-                    if (i > index) {
-                        previousGroupCopy[i - 1] = previousGroup[i];
-                    }
-                    if (i == index) {
-                        continue;
-                    }
-                    if (i < index) {
-                        previousGroupCopy[i] = previousGroup[i];
-                    }
-                }
-                previousGroup = previousGroupCopy;
-            }
-            Group[] newGroupCopy = new Group[newGroup.length];
-            System.arraycopy(newGroup, 0, newGroupCopy, 0, newGroup.length);
-            newGroupCopy[newGroupCopy.length - 1] = new Group(previousGroupStudent);
-        }
-        else System.out.println("Error. This student is already in group.");
-    }
-
-    void addStudentToGroup(Student st, Group[] gr) {
-        if (gr[0].isStudentInGroup(st, gr)) {
-            Group[] grCopy = new Group[gr.length];
-            System.arraycopy(gr, 0, grCopy, 0, gr.length);
-            grCopy[gr.length - 1] = new Group(st);
-        }
-        else System.out.println("Error. This student is already in group.");
-    }
-    boolean isStudentInGroup(Student st, Group[] gr) {
-        boolean flag = true;
-        for(Group group : gr) {
-            if(st.studentID == group.studentID) {
-                flag = false;
-            }
-        }
-        return flag;
-    }
-    boolean isStudentInGroup(Group student, Group[] gr) {
-        boolean flag = true;
-        for(Group group : gr) {
-            if(student.studentID == group.studentID) {
-                flag = false;
-            }
-        }
-        return flag;
-    }
-
-    @Override
-    public String toString() {
-        return "number of group: " + groupNum + '\n' + super.toString();
-    }
-}
-***STUDENT.JAVA***
-package com.max.idea;
-
-class Student {
-    protected String surname;
-    protected String name;
-    protected int age;
-    protected int height;
-    protected int weight;
-    protected int studentID;
-
-    Student(String surname, String name, int age, int height, int weight, int studentID) {
+    Group(String surname, String name, int age, int height, int weight, int studentID) {
         this.surname = surname;
         this.name = name;
         this.age = age;
@@ -286,31 +61,236 @@ class Student {
         this.studentID = studentID;
     }
 
-    Student() {
-        this.surname = "-";
-        this.name = "-";
+    Group() {
+        this.surname = "";
+        this.name = "";
         this.age = 0;
         this.height = 0;
         this.weight = 0;
         this.studentID = 0;
     }
 
-    @Override
-    public String toString() {
-        return "surname: " + surname + "\nname: " + name + "\nage: " + age +
-                "\nheight: " + height + "\nweight: " + weight + "\nID: " + studentID;
+    static boolean isStudentExists(ArrayList<Group> gr, Group st) {
+        boolean flag = false;
+        if (gr.contains(st)) {
+            flag = true;
+        }
+        return flag;
+    }
+
+    static void addStudentToGroup(ArrayList<Group> gr, Group st) {
+        if (!isStudentExists(gr, st)) {
+            gr.add(st);
+        } else System.out.println("Error. This student is already in group.");
+    }
+
+    static void changeStudentsGroup(ArrayList<Group> prevGr, ArrayList<Group> newGr, Group st) {
+        if (!isStudentExists(newGr, st)) {
+            newGr.add(st);
+            prevGr.remove(st);
+        }
+        else System.out.println("This student is already in new group.");
+    }
+
+    static void searchStudents(ArrayList<Group> gr, int condition) {
+        Scanner sc = new Scanner(System.in);
+        boolean flag = true;
+        switch (condition) {
+            case 1: {
+                System.out.println("Type surname of student: ");
+                String searchSurname = sc.nextLine();
+                for (Group group : gr) {
+                    if (group.surname.equals(searchSurname)) {
+                        group.ShowInfo();
+                        break;
+                    }
+                    else flag = false;
+                }
+            }
+            break;
+            case 2: {
+                System.out.println("Type name of student: ");
+                String searchName = sc.nextLine();
+                for (Group group : gr) {
+                    if (group.name.equals(searchName)) {
+                        group.ShowInfo();
+                        break;
+                    }
+                    else flag = false;
+                }
+            }
+            break;
+            case 3: {
+                System.out.println("Type age of student: ");
+                int searchAge = sc.nextInt();
+                for (Group group : gr) {
+                    if (group.age == searchAge) {
+                        group.ShowInfo();
+                        break;
+                    }
+                    else flag = false;
+                }
+            }
+            break;
+            case 4: {
+                System.out.println("Type height of student: ");
+                int searchHeight = sc.nextInt();
+                for (Group group : gr) {
+                    if (group.height == searchHeight) {
+                        group.ShowInfo();
+                        break;
+                    }
+                    else flag = false;
+                }
+            }
+            break;
+            case 5: {
+                System.out.println("Type weight of student: ");
+                int searchWeight = sc.nextInt();
+                for (Group group : gr) {
+                    if (group.weight == searchWeight) {
+                        group.ShowInfo();
+                        break;
+                    }
+                    else flag = false;
+                }
+            }
+            break;
+            case 6: {
+                System.out.println("Type ID of student: ");
+                int searchStudentID = sc.nextInt();
+                for (Group group : gr) {
+                    if (group.studentID == searchStudentID) {
+                        group.ShowInfo();
+                        break;
+                    }
+                    else flag = false;
+                }
+            }
+            break;
+            default: {
+                System.out.println("Wrong condition, try again in some seconds.");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ie) {
+                    ie.printStackTrace();
+                }
+                System.out.println("Type new number as a condition.");
+                searchStudents(gr, sc.nextInt());
+            }
+            break;
+        }
+        if(!flag) System.out.println("There is no student for your criteria.");
+    }
+
+    static void filterStudents(ArrayList<Group> gr, int condition) {
+        boolean flag = true;
+        Scanner sc = new Scanner(System.in);
+        switch(condition) {
+            case 1: {
+                System.out.println("Filter student by surname via typing a word: ");
+                String filterSurname = sc.nextLine();
+                for(Group group : gr) {
+                    if(group.surname.contains(filterSurname)) {
+                        group.ShowInfo();
+                        break;
+                    }
+                    else flag = false;
+                }
+            }
+            break;
+            case 2: {
+                System.out.println("Filter student by name via typing a word: ");
+                String filterName = sc.nextLine();
+                for(Group group : gr) {
+                    if(group.name.contains(filterName)) {
+                        group.ShowInfo();
+                        break;
+                    }
+                    else flag = false;
+                }
+            }
+            break;
+            case 3: {
+                System.out.println("Filter student by age via typing a range:\nfrom: ");
+                int startFilterAge = sc.nextInt();
+                System.out.println("to: ");
+                int endFilterAge = sc.nextInt();
+                for(Group group : gr) {
+                    if(group.age >= startFilterAge && group.age <= endFilterAge) {
+                        group.ShowInfo();
+                        break;
+                    }
+                    else flag = false;
+                }
+            }
+            break;
+            case 4: {
+                System.out.println("Filter student by height via typing a range:\nfrom: ");
+                int startFilterHeight = sc.nextInt();
+                System.out.println("to: ");
+                int endFilterHeight = sc.nextInt();
+                for(Group group : gr) {
+                    if(group.height >= startFilterHeight && group.height <= endFilterHeight) {
+                        group.ShowInfo();
+                        break;
+                    }
+                    else flag = false;
+                }
+            }
+            break;
+            case 5: {
+                System.out.println("Filter student by weight via typing a range:\nfrom: ");
+                int startFilterWeight = sc.nextInt();
+                System.out.println("to: ");
+                int endFilterWeight = sc.nextInt();
+                for(Group group : gr) {
+                    if(group.weight >= startFilterWeight && group.weight <= endFilterWeight) {
+                        group.ShowInfo();
+                        break;
+                    }
+                    else flag = false;
+                }
+            }
+            break;
+            case 6: {
+                System.out.println("Filter student by ID via typing a range:\nfrom: ");
+                int startFilterID = sc.nextInt();
+                System.out.println("to: ");
+                int endFilterID = sc.nextInt();
+                for(Group group : gr) {
+                    if(group.weight >= startFilterID && group.weight <= endFilterID) {
+                        group.ShowInfo();
+                        break;
+                    }
+                    else flag = false;
+                }
+            }
+            break;
+            default: {
+                System.out.println("Wrong condition, try again in some seconds.");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ie) {
+                    ie.printStackTrace();
+                }
+                System.out.println("Type another number as a condition.");
+                filterStudents(gr, sc.nextInt());
+            }
+            break;
+        }
+        if(!flag) System.out.println("There is no student for your filter.");
+    }
+
+    static void ShowInfo(ArrayList<Group> gr) {
+        for (Group group : gr) {
+            System.out.println("surname: " + group.surname + "\nname: " + group.name + "\nage: "
+                    + group.age + "\nheight: " + group.height + "\nweight: " + group.weight + "\nID: " + group.studentID);
+        }
+    }
+
+    void ShowInfo() {
+        System.out.println("surname: " + this.surname + "\nname: " + this.name + "\nage: "
+                + this.age + "\nheight: " + this.height + "\nweight: " + this.weight + "\nID: " + this.studentID);
     }
 }
-/*
-Изменить массив Студентов на обычный объект, а Группу сделать массивом, который будет принимать по одному объекту
-Студента и совершать остальные действия по заданию.
-*/
-
-// Створіть модель, яка б дозволяла
-// + 1) розподіляти студентів по групам,
-// + 2) переводити студентів з однієї групи в іншу,
-// + 3) отримувати склад групи відсортований за алфавітом,чи за вагою,чи та зростом. Критерій сортування передається, як
-// параметр методу.
-// + 4) Модель повинна дозволяти шукати студентів в групі за прізвищем,
-// + 5) фільтрувати за різними критеріями. Критерії передаються як параметри методу фільтрації.
-// + 6) Виключити можливість додавання одного й того ж студента декілька разів у групу.
