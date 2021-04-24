@@ -1,0 +1,136 @@
+***StudentTest.java***
+package laba3;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class StudentTest {
+
+    @BeforeEach
+    void setUp() {
+    }
+
+    @AfterEach
+    void tearDown() {
+    }
+
+    @Test
+    void compareTo() {
+        int expected;
+        int actual = -1;
+        int i = 0;
+        boolean boolExpected = false;
+        boolean boolActual = false;
+        Student st1 = new Student("Кириленко", "Владислав", 18, 175, 54, 13062002);
+        Student st2 = new Student("Пустовіт", "Ігор", 18, 180, 60, 14072002);
+
+        while(i != st1.name.length() || i != st2.name.length()) {
+            if (st1.name.charAt(i) == st2.name.charAt(i)) {
+                i++;
+            }
+            else break;
+        }
+        if(i == st1.name.length()) actual = 0;
+        else if (st1.name.charAt(i) > st2.name.charAt(i)) {
+            actual = 1;
+        }
+
+        expected = st1.compareTo(st2);
+
+        if(actual > 0) boolActual = true;
+
+        if(expected > 0) boolExpected = true;
+
+        if(expected != 0 && actual != 0) {
+            assertEquals(boolExpected, boolActual);
+        }
+        else assertEquals(expected, actual);
+    }
+}
+
+***GroupTest.java***
+package laba3;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class GroupTest {
+
+    @BeforeEach
+    void setUp() {
+    }
+
+    @AfterEach
+    void tearDown() {
+    }
+
+    @Test
+    void addStudentToGroup() {
+        Group gr202 = new Group(202);
+        Set<Student> expectedStudents;
+        Set<Student> actualStudents = new TreeSet<>();
+        Student st1 = new Student("Кириленко", "Владислав", 18, 175, 54, 13062002);
+
+        gr202.addStudentToGroup(st1);
+        expectedStudents = gr202.students;
+        actualStudents.add(st1);
+
+        assertEquals(expectedStudents, actualStudents);
+    }
+
+    @Test
+    void changeStudentGroup() {
+        Group gr201 = new Group(201);
+        Group gr202 = new Group(202);
+        Student st1 = new Student("Кириленко", "Владислав", 18, 175, 54, 13062002);
+        boolean expected;
+        boolean actual = false;
+
+        gr201.addStudentToGroup(st1);
+        expected = gr201.changeStudentGroup(st1, gr202);
+        gr202.students.remove(st1);
+
+        gr201.addStudentToGroup(st1);
+        if(gr201.students.contains(st1) && !(gr202.students.contains(st1))) {
+            gr201.students.remove(st1);
+            gr202.students.add(st1);
+            actual = gr202.students.contains(st1);
+        }
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void searchByCondition() {
+        List<Student> expected = new ArrayList<>();
+        List<Student> actual;
+        Group gr201 = new Group(201);
+        Student st1 = new Student("Кириленко", "Владислав", 18, 175, 54, 13062002);
+        Student st2 = new Student("Пустовіт", "Ігор", 18, 180, 60, 14072002);
+        Predicate<Student> nameCondition = w -> w.name.equals("Владислав");
+        Predicate<Student> heightCondition = w -> w.height > 165;
+        Predicate<Student> totalCondition = w -> true;
+
+        expected.add(st1);
+        expected.add(st2);
+        expected = gr201.searchByCondition(nameCondition, heightCondition);
+
+        totalCondition = totalCondition.and(nameCondition);
+        totalCondition = totalCondition.and(heightCondition);
+        actual = gr201.students.stream().filter(totalCondition).collect(Collectors.toList());
+
+        assertEquals(expected, actual);
+    }
+}
